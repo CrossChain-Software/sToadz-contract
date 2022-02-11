@@ -1,6 +1,6 @@
 # sToadz
 
-Minted NFT:
+NFT to be minted && paid for:
 
 - sToadz
 
