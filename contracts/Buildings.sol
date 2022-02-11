@@ -884,7 +884,7 @@ contract Buildings is LilOwnable, ERC721 {
         _royaltyAddresses[1] = _contributorAddresses[1];
         _royaltyAddresses[2] = _contributorAddresses[2];
         _royaltyAddresses[3] = _contributorAddresses[3]; 
-        _royaltyAddresses[3] = _contributorAddresses[4]; // freeflow: 0x5B588e36FF358D4376A76FB163fd69Da02A2A9a5
+        _royaltyAddresses[3] = _contributorAddresses[4];
 
         _royaltyShares[_royaltyAddresses[0]] = 295;
         _royaltyShares[_royaltyAddresses[1]] = 295;
