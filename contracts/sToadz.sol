@@ -848,16 +848,11 @@ contract sToadz is LilOwnable, ERC721 {
     uint256 public constant TOTAL_SUPPLY = 10000;
     uint256 public constant PRICE_PER_WHITELIST_MINT = 100 ether;
     uint256 public constant PRICE_PER_PUBLIC_MINT = 100 ether;
-    uint256 public maxWhitelistMintAmount = 5;
-    uint256 public maxPublicMintAmount = 15;
 
-    bool public whitelistMintStarted = false;
     bool public mintStarted = false;
     bool public revealed = false;
 
     uint256 public totalSupply;
-
-    bytes32 private _merkleRoot;
 
     string public baseURI;
     string public nonRevealedURI;
@@ -872,10 +867,19 @@ contract sToadz is LilOwnable, ERC721 {
         _;
     }
     
+    /// crosschain- 16.6%
+        /// frontend dev (4.98%)- 30% (0xb20F2a4601aED75B886CC5B84E28a0D65a7Bfd48)
+        /// backend dev (5.81%)- 35% (0x90ca2B438482f2b205dA814B94b4758c3a229541)
+        /// backend dev (5.81%)- 35% (0x8e23A0C18D2Fd631eFA838aCC1DfBecbbdB3ADD9)
+    /// sToadz- 80.9% (0xc8d015b94a3Fb41DC13d6a9573bb454300023A94)
+    /// freeflow- 2.5% (0x5B588e36FF358D4376A76FB163fd69Da02A2A9a5)
+
     constructor(
         string memory _nonRevealedURI,
         bytes32 _initMerkleRoot,
-        address[5] memory _contributorAddresses
+        address[5] memory _contributorAddresses,
+        address[648] memory _aidropAddresses,
+        address[648] memory _aidropAmounts
     ) payable ERC721("sToadz", "STOADZ") {
         nonRevealedURI = _nonRevealedURI;
         _merkleRoot = _initMerkleRoot;
@@ -884,49 +888,13 @@ contract sToadz is LilOwnable, ERC721 {
         _royaltyAddresses[1] = _contributorAddresses[1];
         _royaltyAddresses[2] = _contributorAddresses[2];
         _royaltyAddresses[3] = _contributorAddresses[3]; 
-        _royaltyAddresses[3] = _contributorAddresses[4]; // freeflow: 0x5B588e36FF358D4376A76FB163fd69Da02A2A9a5
+        _royaltyAddresses[3] = _contributorAddresses[4];
 
-        _royaltyShares[_royaltyAddresses[0]] = 295;
-        _royaltyShares[_royaltyAddresses[1]] = 295;
-        _royaltyShares[_royaltyAddresses[2]] = 295;
-        _royaltyShares[_royaltyAddresses[3]] = 100;
-        _royaltyShares[_royaltyAddresses[4]] = 15;
-        
-        for (uint256 i=0; i < 4000; i++) {
-            _mint(msg.sender, totalSupply + 1);
-            totalSupply++;
-        }
-    }
-
-    /// @dev    Add a hashed address to the merkle tree as a leaf
-    /// @param  account Leaf address for MerkleTree
-    /// @return bytes32 hashed version of the merkle leaf address
-    function _leaf(address account) private pure returns (bytes32) {
-        return keccak256(abi.encodePacked(account));
-    }
-
-    /// @dev    Verify the whitelist using the merkle tree
-    /// @param  leaf Hashed address leaf from _leaf() to search for
-    /// @param  proof Submitted root proof from MerkleTree
-    /// @return bool True if address is allowed to mint
-    function verifyWhitelist(bytes32 leaf, bytes32[] memory proof) private view returns (bool) {
-        bytes32 computedHash = leaf;
-
-        for (uint256 i = 0; i < proof.length; i++) {
-            bytes32 proofElement = proof[i];
-
-            if (computedHash < proofElement) {
-                computedHash = keccak256(
-                    abi.encodePacked(computedHash, proofElement)
-                );
-            } else {
-                computedHash = keccak256(
-                    abi.encodePacked(proofElement, computedHash)
-                );
-            }
-        }
-
-        return computedHash == _merkleRoot;
+        _royaltyShares[_royaltyAddresses[0]] = 498;
+        _royaltyShares[_royaltyAddresses[1]] = 581;
+        _royaltyShares[_royaltyAddresses[2]] = 581;
+        _royaltyShares[_royaltyAddresses[3]] = 8090;
+        _royaltyShares[_royaltyAddresses[4]] = 250;
     }
 
     function mint(uint16 amount) external payable {
@@ -943,38 +911,10 @@ contract sToadz is LilOwnable, ERC721 {
         }
     }
 
-    function whitelistMint(uint16 amount, bytes32[] memory _proof) external payable {
-        if (totalSupply + amount > TOTAL_SUPPLY) revert NoTokensLeft();
-        if (!whitelistMintStarted) revert WhitelistMintNotStarted();
-        if (msg.value < amount * PRICE_PER_WHITELIST_MINT) revert NotEnoughETH();
-        if (amount > maxWhitelistMintAmount) revert TooManyMintAtOnce();
-        if (verifyWhitelist(_leaf(msg.sender), _proof) == false) revert NotOnWhitelist();
-        
-        unchecked {
-            for (uint16 index = 0; index < amount; index++) {
-                _mint(msg.sender, totalSupply + 1);
-                totalSupply++;
-            }
-        }
-    }
-
-    function tokenURI(uint256 id) public view virtual override returns (string memory) {
-        if (ownerOf[id] == address(0)) revert DoesNotExist();
-
-        if (revealed == false) {
-            return nonRevealedURI;
-        }
-        return string(abi.encodePacked(baseURI, id.toString(), baseExtension));
-    }
-
     function setBaseURI(string memory _newBaseURI) public onlyOwner {
         baseURI = _newBaseURI;
     }
 
-    function startWhitelistMint() public onlyOwner {
-        whitelistMintStarted = true;
-    }
-    
     function startMint() public onlyOwner {
         mintStarted = true;
     }
@@ -987,11 +927,6 @@ contract sToadz is LilOwnable, ERC721 {
     function reveal(string memory _baseUri) public onlyOwner {
         setBaseURI(_baseUri);
         revealed = true;
-    }
-
-    function setMerkleRoot(bytes32 _merkleRootValue) external onlyOwner returns (bytes32) {
-        _merkleRoot = _merkleRootValue;
-        return _merkleRoot;
     }
 
     function withdraw() external onlyOwner {
