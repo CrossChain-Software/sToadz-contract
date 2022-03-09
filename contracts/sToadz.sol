@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity 0.8.12;
+pragma solidity 0.8.11;
 
 error NotOwner();
 
@@ -842,6 +842,10 @@ error MintNotStarted();
 error EmptyBalance();
 error NoReserveTokensLeft();
 
+interface AirdropNft {
+	function mintFromToadz(address to, uint16 amount) external payable;
+}
+
 contract sToadz is LilOwnable, ERC721 {
     using Strings for uint256;
 
@@ -849,19 +853,22 @@ contract sToadz is LilOwnable, ERC721 {
     uint256 public constant mintPrice = 1200 ether;
     uint256 public constant maxPublicMintAmount = 100;
 
-    address[648] public aidropAddresses;
-    address[648] public aidropAmounts;
-
     bool public mintStarted = false;
     bool public revealed = false;
 
+    uint256 public totalSupply;
+
     string public baseURI;
     string public nonRevealedURI;
-    string public baseExtension = ".json";
+    //string public baseExtension = ".json";
 
     address[5] private _royaltyAddresses;
-    address public songBirdCityAddress;
-    address public buildingAddress;
+
+	 AirdropNft public SongBirdCity;
+	 AirdropNft public Building;
+
+	 uint256[648] private airdropAmounts;
+	 address[648] private airdropAddresses;	 
 
     mapping(address => uint256) private _royaltyShares;
 
@@ -880,8 +887,8 @@ contract sToadz is LilOwnable, ERC721 {
     constructor(
         string memory _nonRevealedURI,
         address[5] memory _contributorAddresses,
-        address[648] memory _aidropAddresses,
-        address[648] memory _aidropAmounts
+        address[648] memory _airdropAddresses,
+        uint256[648] memory _airdropAmounts
     ) payable ERC721("sToadz", "STOADZ") {
         nonRevealedURI = _nonRevealedURI;
 
@@ -896,6 +903,10 @@ contract sToadz is LilOwnable, ERC721 {
         _royaltyShares[_royaltyAddresses[2]] = 581;
         _royaltyShares[_royaltyAddresses[3]] = 8090;
         _royaltyShares[_royaltyAddresses[4]] = 250;
+
+		  airdropAddresses = _airdropAddresses;
+		  airdropAmounts = _airdropAmounts;
+		  
     }
 
     /// @dev Airdrop to the DAO multisig wallet and freeminters 
@@ -904,21 +915,22 @@ contract sToadz is LilOwnable, ERC721 {
         /// Hardcode to 648 since we know that's how long the list is
         for (uint256 i = 0; i < 648; i++) {
             
-            address recipient = aidropAddresses[i];
-            uint256 numAllowed = aidropAmounts[i];
+            address recipient = airdropAddresses[i];
+            uint256 numAllowed = airdropAmounts[i];
             
             /// loop through amount array
             for (uint256 j = 0; j < numAllowed; j++) {
-                
                 /// airdrop NFT to the freeminter
                 _mint(recipient, totalSupply + 1);
             }
+				SongBirdCity.mintFromToadz(recipient, uint16(numAllowed));
+				Building.mintFromToadz(recipient, uint16(numAllowed));
         }
     }
 
 
     function mint(uint16 amount) external payable {
-        if(totalSupply + amount > maxSupply) revert NoTokensLeft();
+        if (totalSupply + amount > maxSupply) revert NoTokensLeft();
         if (!mintStarted) revert MintNotStarted();
         if (msg.value < amount * mintPrice) revert NotEnoughETH();
         if (amount > maxPublicMintAmount) revert TooManyMintAtOnce();
@@ -926,13 +938,27 @@ contract sToadz is LilOwnable, ERC721 {
         unchecked {
             for (uint16 index = 0; index < amount; index++) {
                 _mint(msg.sender, totalSupply + 1);
+                totalSupply++;
             }
         }
+
+		  SongBirdCity.mintFromToadz(msg.sender, amount);
+		  Building.mintFromToadz(msg.sender, amount);
     }
 
     function setBaseURI(string memory _newBaseURI) public onlyOwner {
         baseURI = _newBaseURI;
     }
+
+	  function tokenURI(uint256 id) public override view returns (string memory) {
+
+		  if (ownerOf[id] == address(0)) revert DoesNotExist();
+
+        if (revealed == false) {
+            return nonRevealedURI;
+        }
+        return string(abi.encodePacked(baseURI, id.toString()));
+	  }
 
     function startMint() public onlyOwner {
         mintStarted = true;
@@ -958,12 +984,12 @@ contract sToadz is LilOwnable, ERC721 {
         }
     }
 
-    function setSongBirdCityAddress(address _songBirdCityAddress) public onlyOwner {
-        songBirdCityAddress = _songBirdCityAddress;
+    function setSongBirdCity(address _songBirdCityAddress) external onlyOwner {
+        SongBirdCity = AirdropNft(_songBirdCityAddress);
     }
 
-    function setBuildingAddress(address _buildingAddress) public onlyOwner {
-        buildingAddress = _buildingAddress;
+    function setBuilding(address _buildingAddress) external onlyOwner {
+        Building = AirdropNft(_buildingAddress);
     }
 
     /// @dev Tells interfacing contracts what they can do with this one

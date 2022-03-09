@@ -857,7 +857,7 @@ contract Buildings is LilOwnable, ERC721 {
     constructor(
         string memory _nonRevealedURI,
 		  address _toadzContract
-    ) payable ERC721("SongBirdCity", "SBC") {
+    ) payable ERC721("Buildings", "BUILD") {
         nonRevealedURI = _nonRevealedURI;
 			TOADZ = _toadzContract;
     }
