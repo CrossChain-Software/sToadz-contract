@@ -833,39 +833,21 @@ library FixedPointMathLib {
 
 
 error DoesNotExist();
-error NoTokensLeft();
-error NotEnoughETH();
-error TooManyMintAtOnce();
-error NotOnWhitelist();
-error WhitelistMintNotStarted();
-error MintNotStarted();
-error EmptyBalance();
-error NoReserveTokensLeft();
+error NotFromToadz();
 
 contract SongBirdCity is LilOwnable, ERC721 {
     using Strings for uint256;
 
-    uint256 public constant TOTAL_SUPPLY = 10000;
-    uint256 public constant PRICE_PER_WHITELIST_MINT = 100 ether;
-    uint256 public constant PRICE_PER_PUBLIC_MINT = 100 ether;
-    uint256 public maxWhitelistMintAmount = 5;
-    uint256 public maxPublicMintAmount = 15;
-
-    bool public whitelistMintStarted = false;
     bool public mintStarted = false;
     bool public revealed = false;
 
     uint256 public totalSupply;
 
-    bytes32 private _merkleRoot;
-
     string public baseURI;
     string public nonRevealedURI;
     string public baseExtension = ".json";
 
-    address[5] private _royaltyAddresses;
-
-    mapping(address => uint256) private _royaltyShares;
+	 address public immutable TOADZ;
 
     modifier onlyOwner() {
         require(msg.sender == _owner, "Ownable: caller is not the owner");
@@ -874,86 +856,18 @@ contract SongBirdCity is LilOwnable, ERC721 {
     
     constructor(
         string memory _nonRevealedURI,
-        bytes32 _initMerkleRoot,
-        address[5] memory _contributorAddresses
+		  address _toadzContract
     ) payable ERC721("SongBirdCity", "SBC") {
         nonRevealedURI = _nonRevealedURI;
-        _merkleRoot = _initMerkleRoot;
-
-        _royaltyAddresses[0] = _contributorAddresses[0]; 
-        _royaltyAddresses[1] = _contributorAddresses[1];
-        _royaltyAddresses[2] = _contributorAddresses[2];
-        _royaltyAddresses[3] = _contributorAddresses[3]; 
-        _royaltyAddresses[3] = _contributorAddresses[4]; // freeflow: 0x5B588e36FF358D4376A76FB163fd69Da02A2A9a5
-
-        _royaltyShares[_royaltyAddresses[0]] = 295;
-        _royaltyShares[_royaltyAddresses[1]] = 295;
-        _royaltyShares[_royaltyAddresses[2]] = 295;
-        _royaltyShares[_royaltyAddresses[3]] = 100;
-        _royaltyShares[_royaltyAddresses[4]] = 15;
-        
-        // need to change this, since they'll be taking the remainder of the NFTs
-        for (uint256 i=0; i < 50; i++) {
-            _mint(msg.sender, totalSupply + 1);
-            totalSupply++;
-        }
+			TOADZ = _toadzContract;
     }
 
-    /// @dev    Add a hashed address to the merkle tree as a leaf
-    /// @param  account Leaf address for MerkleTree
-    /// @return bytes32 hashed version of the merkle leaf address
-    function _leaf(address account) private pure returns (bytes32) {
-        return keccak256(abi.encodePacked(account));
-    }
 
-    /// @dev    Verify the whitelist using the merkle tree
-    /// @param  leaf Hashed address leaf from _leaf() to search for
-    /// @param  proof Submitted root proof from MerkleTree
-    /// @return bool True if address is allowed to mint
-    function verifyWhitelist(bytes32 leaf, bytes32[] memory proof) private view returns (bool) {
-        bytes32 computedHash = leaf;
-
-        for (uint256 i = 0; i < proof.length; i++) {
-            bytes32 proofElement = proof[i];
-
-            if (computedHash < proofElement) {
-                computedHash = keccak256(
-                    abi.encodePacked(computedHash, proofElement)
-                );
-            } else {
-                computedHash = keccak256(
-                    abi.encodePacked(proofElement, computedHash)
-                );
-            }
-        }
-
-        return computedHash == _merkleRoot;
-    }
-
-    function mint(uint16 amount) external payable {
-        if (totalSupply + amount > TOTAL_SUPPLY) revert NoTokensLeft();
-        if (!mintStarted) revert MintNotStarted();
-        if (msg.value < amount * PRICE_PER_PUBLIC_MINT) revert NotEnoughETH();
-        if (amount > maxPublicMintAmount) revert TooManyMintAtOnce();
-
+    function mintFromToadz(address to, uint16 amount) external payable {    
+		  if(msg.sender != TOADZ) revert NotFromToadz();
         unchecked {
             for (uint16 index = 0; index < amount; index++) {
-                _mint(msg.sender, totalSupply + 1);
-                totalSupply++;
-            }
-        }
-    }
-
-    function whitelistMint(uint16 amount, bytes32[] memory _proof) external payable {
-        if (totalSupply + amount > TOTAL_SUPPLY) revert NoTokensLeft();
-        if (!whitelistMintStarted) revert WhitelistMintNotStarted();
-        if (msg.value < amount * PRICE_PER_WHITELIST_MINT) revert NotEnoughETH();
-        if (amount > maxWhitelistMintAmount) revert TooManyMintAtOnce();
-        if (verifyWhitelist(_leaf(msg.sender), _proof) == false) revert NotOnWhitelist();
-        
-        unchecked {
-            for (uint16 index = 0; index < amount; index++) {
-                _mint(msg.sender, totalSupply + 1);
+                _mint(to, totalSupply + 1);
                 totalSupply++;
             }
         }
@@ -972,38 +886,9 @@ contract SongBirdCity is LilOwnable, ERC721 {
         baseURI = _newBaseURI;
     }
 
-    function startWhitelistMint() public onlyOwner {
-        whitelistMintStarted = true;
-    }
-    
-    function startMint() public onlyOwner {
-        mintStarted = true;
-    }
-
-    function pauseMint() public onlyOwner {
-        whitelistMintStarted = false;
-        mintStarted = false;
-    }
-
     function reveal(string memory _baseUri) public onlyOwner {
         setBaseURI(_baseUri);
         revealed = true;
-    }
-
-    function setMerkleRoot(bytes32 _merkleRootValue) external onlyOwner returns (bytes32) {
-        _merkleRoot = _merkleRootValue;
-        return _merkleRoot;
-    }
-
-    function withdraw() external onlyOwner {
-        if (address(this).balance == 0) revert EmptyBalance();
-        uint256 balance = address(this).balance;
-
-        for (uint256 i = 0; i < _royaltyAddresses.length; i++) {
-            payable(_royaltyAddresses[i]).transfer(
-                balance / 1000 * _royaltyShares[_royaltyAddresses[i]]
-            );
-        }
     }
 
     /// @dev Tells interfacing contracts what they can do with this one
