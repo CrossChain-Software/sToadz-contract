@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity 0.8.11;
+pragma solidity 0.8.12;
 
 error NotOwner();
 
@@ -845,14 +845,15 @@ error NoReserveTokensLeft();
 contract sToadz is LilOwnable, ERC721 {
     using Strings for uint256;
 
-    uint256 public constant totalSupply = 10000;
+    uint256 public constant maxSupply = 10000;
     uint256 public constant mintPrice = 1200 ether;
     uint256 public constant maxPublicMintAmount = 100;
 
+    address[648] public aidropAddresses;
+    address[648] public aidropAmounts;
+
     bool public mintStarted = false;
     bool public revealed = false;
-
-    uint256 public totalSupply;
 
     string public baseURI;
     string public nonRevealedURI;
@@ -878,13 +879,11 @@ contract sToadz is LilOwnable, ERC721 {
 
     constructor(
         string memory _nonRevealedURI,
-        bytes32 _initMerkleRoot,
         address[5] memory _contributorAddresses,
         address[648] memory _aidropAddresses,
         address[648] memory _aidropAmounts
     ) payable ERC721("sToadz", "STOADZ") {
         nonRevealedURI = _nonRevealedURI;
-        _merkleRoot = _initMerkleRoot;
 
         _royaltyAddresses[0] = _contributorAddresses[0]; 
         _royaltyAddresses[1] = _contributorAddresses[1];
@@ -905,8 +904,8 @@ contract sToadz is LilOwnable, ERC721 {
         /// Hardcode to 648 since we know that's how long the list is
         for (uint256 i = 0; i < 648; i++) {
             
-            address recipient = _aidropAddresses[i];
-            uint256 numAllowed = _aidropAmounts[i];
+            address recipient = aidropAddresses[i];
+            uint256 numAllowed = aidropAmounts[i];
             
             /// loop through amount array
             for (uint256 j = 0; j < numAllowed; j++) {
@@ -919,7 +918,7 @@ contract sToadz is LilOwnable, ERC721 {
 
 
     function mint(uint16 amount) external payable {
-        if (totalSupply + amount > totalSupply) revert NoTokensLeft();
+        if(totalSupply + amount > maxSupply) revert NoTokensLeft();
         if (!mintStarted) revert MintNotStarted();
         if (msg.value < amount * mintPrice) revert NotEnoughETH();
         if (amount > maxPublicMintAmount) revert TooManyMintAtOnce();
@@ -927,7 +926,6 @@ contract sToadz is LilOwnable, ERC721 {
         unchecked {
             for (uint16 index = 0; index < amount; index++) {
                 _mint(msg.sender, totalSupply + 1);
-                totalSupply++;
             }
         }
     }
@@ -941,7 +939,6 @@ contract sToadz is LilOwnable, ERC721 {
     }
 
     function pauseMint() public onlyOwner {
-        whitelistMintStarted = false;
         mintStarted = false;
     }
 
@@ -961,11 +958,11 @@ contract sToadz is LilOwnable, ERC721 {
         }
     }
 
-    function setSongBirdCityAddress(address _songBirdCityAddress) onlyOwner {
+    function setSongBirdCityAddress(address _songBirdCityAddress) public onlyOwner {
         songBirdCityAddress = _songBirdCityAddress;
     }
 
-    function setBuildingAddress(address _buildingAddress) onlyOwner {
+    function setBuildingAddress(address _buildingAddress) public onlyOwner {
         buildingAddress = _buildingAddress;
     }
 
