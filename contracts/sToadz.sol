@@ -845,9 +845,9 @@ error NoReserveTokensLeft();
 contract sToadz is LilOwnable, ERC721 {
     using Strings for uint256;
 
-    uint256 public constant TOTAL_SUPPLY = 10000;
-    uint256 public constant PRICE_PER_WHITELIST_MINT = 100 ether;
-    uint256 public constant PRICE_PER_PUBLIC_MINT = 100 ether;
+    uint256 public constant totalSupply = 10000;
+    uint256 public constant mintPrice = 1200 ether;
+    uint256 public constant maxPublicMintAmount = 100;
 
     bool public mintStarted = false;
     bool public revealed = false;
@@ -897,10 +897,15 @@ contract sToadz is LilOwnable, ERC721 {
         _royaltyShares[_royaltyAddresses[4]] = 250;
     }
 
+    function airdrop() {
+
+    }
+
+    
     function mint(uint16 amount) external payable {
-        if (totalSupply + amount > TOTAL_SUPPLY) revert NoTokensLeft();
+        if (totalSupply + amount > totalSupply) revert NoTokensLeft();
         if (!mintStarted) revert MintNotStarted();
-        if (msg.value < amount * PRICE_PER_PUBLIC_MINT) revert NotEnoughETH();
+        if (msg.value < amount * mintPrice) revert NotEnoughETH();
         if (amount > maxPublicMintAmount) revert TooManyMintAtOnce();
 
         unchecked {
