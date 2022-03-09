@@ -897,11 +897,25 @@ contract sToadz is LilOwnable, ERC721 {
         _royaltyShares[_royaltyAddresses[4]] = 250;
     }
 
-    function airdrop() {
-
+    /// @dev Airdrop to the DAO multisig wallet and freeminters 
+    function airdrop() external onlyOwner {
+        /// loop through wallets array
+        /// Hardcode to 648 since we know that's how long the list is
+        for (uint256 i = 0; i < 648; i++) {
+            
+            address recipient = _aidropAddresses[i];
+            uint256 numAllowed = _aidropAmounts[i];
+            
+            /// loop through amount array
+            for (uint256 j = 0; j < numAllowed; j++) {
+                
+                /// airdrop NFT to the freeminter
+                _mint(recipient, totalSupply + 1);
+            }
+        }
     }
 
-    
+
     function mint(uint16 amount) external payable {
         if (totalSupply + amount > totalSupply) revert NoTokensLeft();
         if (!mintStarted) revert MintNotStarted();
