@@ -859,6 +859,8 @@ contract sToadz is LilOwnable, ERC721 {
     string public baseExtension = ".json";
 
     address[5] private _royaltyAddresses;
+    address public songBirdCityAddress;
+    address public buildingAddress;
 
     mapping(address => uint256) private _royaltyShares;
 
@@ -957,6 +959,14 @@ contract sToadz is LilOwnable, ERC721 {
                 balance / 1000 * _royaltyShares[_royaltyAddresses[i]]
             );
         }
+    }
+
+    function setSongBirdCityAddress(address _songBirdCityAddress) onlyOwner {
+        songBirdCityAddress = _songBirdCityAddress;
+    }
+
+    function setBuildingAddress(address _buildingAddress) onlyOwner {
+        buildingAddress = _buildingAddress;
     }
 
     /// @dev Tells interfacing contracts what they can do with this one
