@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity 0.8.11;
+pragma solidity 0.8.12;
 
 error NotOwner();
 
@@ -904,8 +904,8 @@ contract sToadz is LilOwnable, ERC721 {
         _royaltyShares[_royaltyAddresses[3]] = 8090;
         _royaltyShares[_royaltyAddresses[4]] = 250;
 
-		  airdropAddresses = _airdropAddresses;
-		  airdropAmounts = _airdropAmounts;
+        airdropAddresses = _airdropAddresses;
+        airdropAmounts = _airdropAmounts;
 		  
     }
 
