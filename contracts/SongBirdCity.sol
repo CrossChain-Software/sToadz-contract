@@ -845,7 +845,6 @@ contract SongBirdCity is LilOwnable, ERC721 {
 
     string public baseURI;
     string public nonRevealedURI;
-    string public baseExtension = ".json";
 
 	 address public immutable TOADZ;
 
@@ -879,7 +878,7 @@ contract SongBirdCity is LilOwnable, ERC721 {
         if (revealed == false) {
             return nonRevealedURI;
         }
-        return string(abi.encodePacked(baseURI, id.toString(), baseExtension));
+        return string(abi.encodePacked(baseURI, id.toString()));
     }
 
     function setBaseURI(string memory _newBaseURI) public onlyOwner {
