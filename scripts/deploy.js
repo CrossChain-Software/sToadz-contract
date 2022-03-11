@@ -11,22 +11,37 @@ const deploy = async () => {
     "0xc8d015b94a3Fb41DC13d6a9573bb454300023A94",
     "0x5B588e36FF358D4376A76FB163fd69Da02A2A9a5",
   ];
-  const sToadzContract = await sToadzFactory.deploy("", contributorAddresses, airdropAddresses, airdropAmounts);
+  const sToadzContract = await sToadzFactory.deploy(
+    "",
+    contributorAddresses,
+    airdropAddresses,
+    airdropAmounts
+  );
   await sToadzContract.deployed();
 
   const songbirdFactory = await ethers.getContractFactory("SongBirdCity");
-  const buildingsFactory = await ethers.getContractFactory("Buildings");
+  const buildingsFactory = await ethers.getContractFactory("LuxuryLofts");
 
-  const songbirdContract = await songbirdFactory.deploy("", sToadzContract.address);
+  const songbirdContract = await songbirdFactory.deploy(
+    "",
+    sToadzContract.address
+  );
   await songbirdContract.deployed();
 
-  const buildingsContract = await buildingsFactory.deploy("", sToadzContract.address);
+  const buildingsContract = await buildingsFactory.deploy(
+    "",
+    sToadzContract.address
+  );
   await buildingsContract.deployed();
 
-  const setSongbirdContract = await sToadzContract.setSongBirdCity(songbirdContract.address);
+  const setSongbirdContract = await sToadzContract.setSongBirdCity(
+    songbirdContract.address
+  );
   await setSongbirdContract.wait();
 
-  const setBuildingsContract = await sToadzContract.setBuilding(buildingsContract.address);
+  const setBuildingsContract = await sToadzContract.setBuilding(
+    buildingsContract.address
+  );
   await setBuildingsContract.wait();
 
   for (i = 0; i < airdropAddresses.length; i++) {
@@ -50,7 +65,10 @@ const deploy = async () => {
   const citySupply = await songbirdContract.totalSupply();
   console.log("Toadz Supply: ", ethers.utils.formatUnits(citySupply, "wei"));
   const buildingSupply = await buildingsContract.totalSupply();
-  console.log("Toadz Supply: ", ethers.utils.formatUnits(buildingSupply, "wei"));
+  console.log(
+    "Toadz Supply: ",
+    ethers.utils.formatUnits(buildingSupply, "wei")
+  );
 };
 
 deploy()
