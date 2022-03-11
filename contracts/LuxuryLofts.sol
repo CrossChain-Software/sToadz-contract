@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity 0.8.11;
+pragma solidity 0.8.12;
 
 error NotOwner();
 
@@ -820,22 +820,11 @@ library FixedPointMathLib {
     }
 }
 
-/*
-
- ____        _ _     _ _             
-| __ ) _   _(_) | __| (_)_ __   __ _ 
-|  _ \| | | | | |/ _` | | '_ \ / _` |
-| |_) | |_| | | | (_| | | | | | (_| |
-|____/ \__,_|_|_|\__,_|_|_| |_|\__, |
-                               |___/ 
-
-*/
-
 
 error DoesNotExist();
 error NotFromToadz();
 
-contract Buildings is LilOwnable, ERC721 {
+contract LuxuryLofts is LilOwnable, ERC721 {
     using Strings for uint256;
 
     bool public mintStarted = false;
