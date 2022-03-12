@@ -1,3 +1,6 @@
+//SPDX-License-Identifier: MIT
+pragma solidity 0.8.12;
+
 import {ERC721TokenReceiver} from "./ERC721TokenReceiver.sol";
 
 /// @notice Modern, minimalist, and gas efficient ERC-721 implementation.

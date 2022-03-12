@@ -1,3 +1,5 @@
+//SPDX-License-Identifier: MIT
+pragma solidity 0.8.12;
 import {ERC20} from "./ERC20.sol";
 
 /// @notice Safe ETH and ERC20 transfer library that gracefully handles missing return values.
