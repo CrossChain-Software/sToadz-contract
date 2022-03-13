@@ -40,7 +40,7 @@ contract TestSToadz is LilOwnable, ERC721 {
     using Strings for uint256;
 
     uint256 public constant maxSupply = 10000;
-    uint256 public constant mintPrice = 1200 ether;
+    uint256 public constant mintPrice = 0.0012 ether;
     uint256 public constant maxPublicMintAmount = 100;
     
     // test w usdc
@@ -150,15 +150,14 @@ contract TestSToadz is LilOwnable, ERC721 {
         baseURI = _newBaseURI;
     }
 
-	  function tokenURI(uint256 id) public override view returns (string memory) {
-
-		  if (ownerOf[id] == address(0)) revert DoesNotExist();
-
+    function tokenURI(uint256 id) public override view returns (string memory) {
+        if (ownerOf[id] == address(0)) revert DoesNotExist();
         if (revealed == false) {
             return nonRevealedURI;
         }
+
         return string(abi.encodePacked(baseURI, id.toString()));
-	  }
+    }
 
     function startMint() public onlyOwner {
         mintStarted = true;
@@ -179,7 +178,7 @@ contract TestSToadz is LilOwnable, ERC721 {
 
         for (uint256 i = 0; i < _royaltyAddresses.length; i++) {
             payable(_royaltyAddresses[i]).transfer(
-                balance / 1000 * _royaltyShares[_royaltyAddresses[i]]
+                balance / 10000 * _royaltyShares[_royaltyAddresses[i]]
             );
         }
     }
