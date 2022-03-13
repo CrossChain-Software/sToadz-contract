@@ -36,18 +36,21 @@ interface AirdropNft {
 	function mintFromToadz(address to, uint16 amount) external payable;
 }
 
-contract sToadz is LilOwnable, ERC721 {
+contract TestSToadz is LilOwnable, ERC721 {
     using Strings for uint256;
 
     uint256 public constant maxSupply = 10000;
-    uint256 public constant mintPrice = 1200 ether;
+    uint256 public constant mintPrice = 0.0012 ether;
     uint256 public constant maxPublicMintAmount = 100;
+    
+    // test w usdc
+    address public sRibbits = 0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b;
 
     bool public mintStarted = false;
     bool public revealed = false;
 
-	 bool public airdropOneComplete;
-	 bool public airdropTwoComplete;
+    bool public airdropOneComplete;
+    bool public airdropTwoComplete;
 
     uint256 public totalSupply;
 
@@ -69,12 +72,17 @@ contract sToadz is LilOwnable, ERC721 {
         require(msg.sender == _owner, "Ownable: caller is not the owner");
         _;
     }
+    
+    /// crosschain- 16.6%
+        /// frontend dev (4.98%)- 30% (0xb20F2a4601aED75B886CC5B84E28a0D65a7Bfd48)
+        /// backend dev (5.81%)- 35% (0x90ca2B438482f2b205dA814B94b4758c3a229541)
+        /// backend dev (5.81%)- 35% (0x8e23A0C18D2Fd631eFA838aCC1DfBecbbdB3ADD9)
+    /// sToadz- 80.9% (0xc8d015b94a3Fb41DC13d6a9573bb454300023A94)
+    /// freeflow- 2.5% (0x5B588e36FF358D4376A76FB163fd69Da02A2A9a5)
 
     constructor(
         string memory _nonRevealedURI,
-        address[5] memory _contributorAddresses,
-        address[][] memory _airdropAddresses,
-        uint256[][] memory _airdropAmounts
+        address[5] memory _contributorAddresses
     ) payable ERC721("sToadz", "STOADZ") {
         nonRevealedURI = _nonRevealedURI;
 
@@ -89,12 +97,13 @@ contract sToadz is LilOwnable, ERC721 {
         _royaltyShares[_royaltyAddresses[2]] = 581;
         _royaltyShares[_royaltyAddresses[3]] = 8090;
         _royaltyShares[_royaltyAddresses[4]] = 250;
-
-        airdropAddresses = _airdropAddresses;
-        airdropAmounts = _airdropAmounts;
 		  
     }
 
+    function setAirdropInfo(address[][] memory _airdropAddresses, uint256[][] memory _airdropAmounts) public onlyOwner {
+        airdropAddresses = _airdropAddresses;
+        airdropAmounts = _airdropAmounts;
+    }
 
 	 /*Split the airdrop to avoid exceeding the block gas limit*/
 
@@ -141,15 +150,14 @@ contract sToadz is LilOwnable, ERC721 {
         baseURI = _newBaseURI;
     }
 
-	  function tokenURI(uint256 id) public override view returns (string memory) {
-
-		  if (ownerOf[id] == address(0)) revert DoesNotExist();
-
+    function tokenURI(uint256 id) public override view returns (string memory) {
+        if (ownerOf[id] == address(0)) revert DoesNotExist();
         if (revealed == false) {
             return nonRevealedURI;
         }
+
         return string(abi.encodePacked(baseURI, id.toString()));
-	  }
+    }
 
     function startMint() public onlyOwner {
         mintStarted = true;
@@ -170,7 +178,7 @@ contract sToadz is LilOwnable, ERC721 {
 
         for (uint256 i = 0; i < _royaltyAddresses.length; i++) {
             payable(_royaltyAddresses[i]).transfer(
-                balance / 1000 * _royaltyShares[_royaltyAddresses[i]]
+                balance / 10000 * _royaltyShares[_royaltyAddresses[i]]
             );
         }
     }
