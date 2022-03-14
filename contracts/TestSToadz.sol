@@ -8,6 +8,7 @@ import {ERC721TokenReceiver} from "./utils/ERC721TokenReceiver.sol";
 import {ERC20} from "./utils/ERC20.sol";
 import {SafeTransferLib} from "./utils/SafeTransferLib.sol";
 import {FixedPointMathLib} from "./utils/FixedPointMathLib.sol";
+import {IERC20} from "./utils/IERC20.sol";
 
 
 
@@ -113,14 +114,8 @@ contract TestSToadz is LilOwnable, ERC721 {
 			for(uint256 j=0; j <numToMint; j++) {
 				_mint(recipient, totalSupply + 1);
 				totalSupply++;
-                 
-                IERC20 sRibbits = IERC20(sRibbitsAddress);
-        
-                SafeERC20.safeApprove(sRibbits, address(this), 3500); 
-                /// SafeERC20(contract, from, to, amount)
-                SafeERC20.safeTransferFrom(sRibbits, address(this), _claimer, 3500);
-
 			}
+
 			SongBirdCity.mintFromToadz(recipient, uint16(numToMint));
 			Building.mintFromToadz(recipient, uint16(numToMint));
       }
@@ -139,6 +134,12 @@ contract TestSToadz is LilOwnable, ERC721 {
             for (uint16 index = 0; index < amount; index++) {
                 _mint(msg.sender, totalSupply + 1);
                 totalSupply++;
+
+                IERC20 sRibbits = IERC20(sRibbitsAddress);
+                
+                ERC20.approve(sRibbits, address(this), 3500); 
+                /// SafeERC20(contract, from, to, amount)
+                ERC20.transferFrom(sRibbits, address(this), msg.sender, 3500);
             }
         }
 
