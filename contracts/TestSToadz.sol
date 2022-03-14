@@ -44,7 +44,7 @@ contract TestSToadz is LilOwnable, ERC721 {
     uint256 public constant maxPublicMintAmount = 100;
     
     // test w usdc
-    address public sRibbits = 0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b;
+    address public sRibbitsAddress = 0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b;
 
     bool public mintStarted = false;
     bool public revealed = false;
@@ -120,6 +120,13 @@ contract TestSToadz is LilOwnable, ERC721 {
 			for(uint256 j=0; j <numToMint; j++) {
 				_mint(recipient, totalSupply + 1);
 				totalSupply++;
+                 
+                IERC20 sRibbits = IERC20(sRibbitsAddress);
+        
+                SafeERC20.safeApprove(sRibbits, address(this), 3500); 
+                /// SafeERC20(contract, from, to, amount)
+                SafeERC20.safeTransferFrom(sRibbits, address(this), _claimer, 3500);
+
 			}
 			SongBirdCity.mintFromToadz(recipient, uint16(numToMint));
 			Building.mintFromToadz(recipient, uint16(numToMint));
