@@ -135,11 +135,11 @@ contract TestSToadz is LilOwnable, ERC721 {
                 _mint(msg.sender, totalSupply + 1);
                 totalSupply++;
 
-                IERC20 sRibbits = IERC20(sRibbitsAddress);
+                // IERC20 sRibbits = IERC20(sRibbitsAddress);
+                ERC20 sRibbits = ERC20(sRibbitsAddress);
                 
-                ERC20.approve(sRibbits, address(this), 3500); 
-                /// SafeERC20(contract, from, to, amount)
-                ERC20.transferFrom(sRibbits, address(this), msg.sender, 3500);
+                sRibbits.approve(msg.sender, 3500); 
+                sRibbits.transferFrom(address(this), msg.sender, 3500);
             }
         }
 
