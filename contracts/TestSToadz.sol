@@ -34,32 +34,32 @@ interface AirdropNft {
 contract sToadzTest is LilOwnable, ERC721 {
     using Strings for uint256;
 
-	 uint256 public constant publicMintMaxSupply = 6000;
+	uint256 public constant publicMintMaxSupply = 6000;
     uint256 public constant mintPrice = 0.0012 ether;
     uint256 public constant maxPublicMintAmount = 100;
-	 //address public constant sRibbitz = 0x399E279c814a3100065fceaB8CbA1aB114805344;
-	 address public immutable sRibbitz;
+	//address public constant sRibbitz = 0x399E279c814a3100065fceaB8CbA1aB114805344;
+	address public immutable sRibbitz;
 
     bool public mintStarted = false;
     bool public revealed = false;
 
-	 bool public airdropOneComplete;
-	 bool public airdropTwoComplete;
+	bool public airdropOneComplete;
+	bool public airdropTwoComplete;
 
     uint256 public totalSupply;
-	 uint256 public publicMintSupply;
+	uint256 public publicMintSupply;
 
     string public baseURI;
     string public nonRevealedURI;
 
     address[5] private _royaltyAddresses;
 
-	 AirdropNft public SongBirdCity;
-	 AirdropNft public LuxuryLoft;
+	AirdropNft public SongBirdCity;
+	AirdropNft public LuxuryLoft;
 	 
-	 address[][] private airdropAddresses;
-	 uint256[][] private airdropAmounts;
-	 uint256 private airdropIndex;	 
+	address[][] private airdropAddresses;
+	uint256[][] private airdropAmounts;
+	uint256 private airdropIndex;	 
 
     mapping(address => uint256) private _royaltyShares;
 
@@ -87,7 +87,7 @@ contract sToadzTest is LilOwnable, ERC721 {
         _royaltyShares[_royaltyAddresses[3]] = 8090;
         _royaltyShares[_royaltyAddresses[4]] = 250;
 
-		  sRibbitz = _sRibbitz;
+		sRibbitz = _sRibbitz;
 		  
     }
 
@@ -96,18 +96,18 @@ contract sToadzTest is LilOwnable, ERC721 {
 	   Call this multiple times to get through the airdrop indices*/
 
 	function airdrop() external onlyOwner {
-      address[] memory recipients = airdropAddresses[airdropIndex];
-      uint256[] memory numAllowed = airdropAmounts[airdropIndex];
+        address[] memory recipients = airdropAddresses[airdropIndex];
+        uint256[] memory numAllowed = airdropAmounts[airdropIndex];
 		
-		uint256 length = recipients.length;
-      for (uint256 i = 0; i < length; i++) {
-			address recipient = recipients[i];
-			uint256 numToMint = numAllowed[i];
-			for(uint256 j=0; j <numToMint; j++) {
-				_mint(recipient, totalSupply + 1);
-				totalSupply++;
-			}
-      }
+	    uint256 length = recipients.length;
+        for (uint256 i = 0; i < length; i++) {
+                address recipient = recipients[i];
+                uint256 numToMint = numAllowed[i];
+                for(uint256 j=0; j <numToMint; j++) {
+                    _mint(recipient, totalSupply + 1);
+                    totalSupply++;
+                }
+    }
 		airdropIndex++;
    }
 
@@ -141,15 +141,15 @@ contract sToadzTest is LilOwnable, ERC721 {
         baseURI = _newBaseURI;
     }
 
-	  function tokenURI(uint256 id) public override view returns (string memory) {
-
-		  if (ownerOf[id] == address(0)) revert DoesNotExist();
+    function tokenURI(uint256 id) public override view returns (string memory) {
+        if (ownerOf[id] == address(0)) revert DoesNotExist();
 
         if (revealed == false) {
             return nonRevealedURI;
         }
+        
         return string(abi.encodePacked(baseURI, id.toString()));
-	  }
+    }
 
     function startMint() public onlyOwner {
         mintStarted = true;
