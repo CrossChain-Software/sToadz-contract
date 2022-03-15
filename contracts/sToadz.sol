@@ -4,13 +4,8 @@ pragma solidity 0.8.12;
 import {Strings} from "./utils/Strings.sol";
 import {LilOwnable} from "./utils/LilOwnable.sol";
 import {ERC721} from "./utils/ERC721.sol";
-import {ERC721TokenReceiver} from "./utils/ERC721TokenReceiver.sol";
 import {ERC20} from "./utils/ERC20.sol";
 import {SafeTransferLib} from "./utils/SafeTransferLib.sol";
-import {FixedPointMathLib} from "./utils/FixedPointMathLib.sol";
-
-
-
 
 /*
 
@@ -23,15 +18,14 @@ import {FixedPointMathLib} from "./utils/FixedPointMathLib.sol";
 
 */
 
-
 error DoesNotExist();
 error NoTokensLeft();
 error NotEnoughETH();
 error TooManyMintAtOnce();
 error MintNotStarted();
 error EmptyBalance();
-error NoReserveTokensLeft();
-error AirdropAlreadyCalled();
+error CannotMintZero();
+
 interface AirdropNft {
 	function mintFromToadz(address to, uint16 amount) external payable;
 }
@@ -39,17 +33,16 @@ interface AirdropNft {
 contract sToadz is LilOwnable, ERC721 {
     using Strings for uint256;
 
-    uint256 public constant maxSupply = 10000;
+	 uint256 public constant publicMintMaxSupply = 6000;
     uint256 public constant mintPrice = 1200 ether;
     uint256 public constant maxPublicMintAmount = 100;
+	 address public constant sRibbitz = 0x399E279c814a3100065fceaB8CbA1aB114805344;
 
     bool public mintStarted = false;
     bool public revealed = false;
 
-	 bool public airdropOneComplete;
-	 bool public airdropTwoComplete;
-
     uint256 public totalSupply;
+	 uint256 public publicMintSupply;
 
     string public baseURI;
     string public nonRevealedURI;
@@ -57,8 +50,8 @@ contract sToadz is LilOwnable, ERC721 {
     address[5] private _royaltyAddresses;
 
 	 AirdropNft public SongBirdCity;
-	 AirdropNft public Building;
-
+	 AirdropNft public LuxuryLoft;
+	 
 	 address[][] private airdropAddresses;
 	 uint256[][] private airdropAmounts;
 	 uint256 private airdropIndex;	 
@@ -72,9 +65,7 @@ contract sToadz is LilOwnable, ERC721 {
 
     constructor(
         string memory _nonRevealedURI,
-        address[5] memory _contributorAddresses,
-        address[][] memory _airdropAddresses,
-        uint256[][] memory _airdropAmounts
+        address[5] memory _contributorAddresses
     ) payable ERC721("sToadz", "STOADZ") {
         nonRevealedURI = _nonRevealedURI;
 
@@ -88,23 +79,18 @@ contract sToadz is LilOwnable, ERC721 {
         _royaltyShares[_royaltyAddresses[1]] = 581;
         _royaltyShares[_royaltyAddresses[2]] = 581;
         _royaltyShares[_royaltyAddresses[3]] = 8090;
-        _royaltyShares[_royaltyAddresses[4]] = 250;
-
-        airdropAddresses = _airdropAddresses;
-        airdropAmounts = _airdropAmounts;
-		  
+        _royaltyShares[_royaltyAddresses[4]] = 250;		  
     }
 
 
-	 /*Split the airdrop to avoid exceeding the block gas limit*/
+	 /*Split the airdrop to avoid exceeding the block gas limit
+	   Call this multiple times to get through the airdrop indices*/
 
-	 function airdrop() external onlyOwner {
-
+	function airdrop() external onlyOwner {
       address[] memory recipients = airdropAddresses[airdropIndex];
       uint256[] memory numAllowed = airdropAmounts[airdropIndex];
-            
+		
 		uint256 length = recipients.length;
-   
       for (uint256 i = 0; i < length; i++) {
 			address recipient = recipients[i];
 			uint256 numToMint = numAllowed[i];
@@ -112,16 +98,19 @@ contract sToadz is LilOwnable, ERC721 {
 				_mint(recipient, totalSupply + 1);
 				totalSupply++;
 			}
-			SongBirdCity.mintFromToadz(recipient, uint16(numToMint));
-			Building.mintFromToadz(recipient, uint16(numToMint));
       }
-
 		airdropIndex++;
    }
+
+	function setAirdropInfo(address[][] memory _airdropAddresses, uint256[][] memory _airdropAmounts) external onlyOwner {
+        airdropAddresses = _airdropAddresses;
+        airdropAmounts = _airdropAmounts;
+	}
 	 
 
     function mint(uint16 amount) external payable {
-        if (totalSupply + amount > maxSupply) revert NoTokensLeft();
+		  if(amount == 0) revert CannotMintZero();
+        if (publicMintSupply + amount > publicMintMaxSupply) revert NoTokensLeft();
         if (!mintStarted) revert MintNotStarted();
         if (msg.value < amount * mintPrice) revert NotEnoughETH();
         if (amount > maxPublicMintAmount) revert TooManyMintAtOnce();
@@ -130,11 +119,13 @@ contract sToadz is LilOwnable, ERC721 {
             for (uint16 index = 0; index < amount; index++) {
                 _mint(msg.sender, totalSupply + 1);
                 totalSupply++;
+					 publicMintSupply++;
             }
         }
 
 		  SongBirdCity.mintFromToadz(msg.sender, amount);
-		  Building.mintFromToadz(msg.sender, amount);
+		  LuxuryLoft.mintFromToadz(msg.sender, amount);
+		  SafeTransferLib.safeTransfer(ERC20(sRibbitz), msg.sender, 3500 ether);
     }
 
     function setBaseURI(string memory _newBaseURI) public onlyOwner {
@@ -164,13 +155,13 @@ contract sToadz is LilOwnable, ERC721 {
         revealed = true;
     }
 
-    function withdraw() external onlyOwner {
+    function withdraw() external {
         if (address(this).balance == 0) revert EmptyBalance();
         uint256 balance = address(this).balance;
 
         for (uint256 i = 0; i < _royaltyAddresses.length; i++) {
             payable(_royaltyAddresses[i]).transfer(
-                balance / 1000 * _royaltyShares[_royaltyAddresses[i]]
+                balance / 10000 * _royaltyShares[_royaltyAddresses[i]]
             );
         }
     }
@@ -179,8 +170,8 @@ contract sToadz is LilOwnable, ERC721 {
         SongBirdCity = AirdropNft(_songBirdCityAddress);
     }
 
-    function setBuilding(address _buildingAddress) external onlyOwner {
-        Building = AirdropNft(_buildingAddress);
+    function setLofts(address _loftAddress) external onlyOwner {
+        LuxuryLoft = AirdropNft(_loftAddress);
     }
 
     /// @dev Tells interfacing contracts what they can do with this one
