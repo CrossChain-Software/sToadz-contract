@@ -33,28 +33,28 @@ interface AirdropNft {
 contract sToadz is LilOwnable, ERC721 {
     using Strings for uint256;
 
-	 uint256 public constant publicMintMaxSupply = 6000;
+	uint256 public constant publicMintMaxSupply = 6000;
     uint256 public constant mintPrice = 1200 ether;
     uint256 public constant maxPublicMintAmount = 100;
-	 address public constant sRibbitz = 0x399E279c814a3100065fceaB8CbA1aB114805344;
+	address public constant sRibbitz = 0x399E279c814a3100065fceaB8CbA1aB114805344;
 
     bool public mintStarted = false;
     bool public revealed = false;
 
     uint256 public totalSupply;
-	 uint256 public publicMintSupply;
+	uint256 public publicMintSupply;
 
     string public baseURI;
     string public nonRevealedURI;
 
     address[5] private _royaltyAddresses;
 
-	 AirdropNft public SongBirdCity;
-	 AirdropNft public LuxuryLoft;
+	AirdropNft public SongBirdCity;
+	AirdropNft public LuxuryLoft;
 	 
-	 address[][] private airdropAddresses;
-	 uint256[][] private airdropAmounts;
-	 uint256 private airdropIndex;	 
+	address[][] private airdropAddresses;
+	uint256[][] private airdropAmounts;
+	uint256 private airdropIndex;	 
 
     mapping(address => uint256) private _royaltyShares;
 
@@ -83,24 +83,26 @@ contract sToadz is LilOwnable, ERC721 {
     }
 
 
-	 /*Split the airdrop to avoid exceeding the block gas limit
-	   Call this multiple times to get through the airdrop indices*/
+	 /* Split the airdrop to avoid exceeding the block gas limit
+	   Call this multiple times to get through the airdrop indices */
 
 	function airdrop() external onlyOwner {
-      address[] memory recipients = airdropAddresses[airdropIndex];
-      uint256[] memory numAllowed = airdropAmounts[airdropIndex];
+        address[] memory recipients = airdropAddresses[airdropIndex];
+        uint256[] memory numAllowed = airdropAmounts[airdropIndex];
 		
-		uint256 length = recipients.length;
-      for (uint256 i = 0; i < length; i++) {
-			address recipient = recipients[i];
-			uint256 numToMint = numAllowed[i];
-			for(uint256 j=0; j <numToMint; j++) {
-				_mint(recipient, totalSupply + 1);
-				totalSupply++;
-			}
-      }
-		airdropIndex++;
-   }
+	    uint256 length = recipients.length;
+        for (uint256 i = 0; i < length; i++) {
+                address recipient = recipients[i];
+                uint256 numToMint = numAllowed[i];
+                
+                for(uint256 j=0; j <numToMint; j++) {
+                    _mint(recipient, totalSupply + 1);
+                    totalSupply++;
+                }
+        }
+        
+        airdropIndex++;
+    }
 
 	function setAirdropInfo(address[][] memory _airdropAddresses, uint256[][] memory _airdropAmounts) external onlyOwner {
         airdropAddresses = _airdropAddresses;
@@ -109,7 +111,7 @@ contract sToadz is LilOwnable, ERC721 {
 	 
 
     function mint(uint16 amount) external payable {
-		  if(amount == 0) revert CannotMintZero();
+		if(amount == 0) revert CannotMintZero();
         if (publicMintSupply + amount > publicMintMaxSupply) revert NoTokensLeft();
         if (!mintStarted) revert MintNotStarted();
         if (msg.value < amount * mintPrice) revert NotEnoughETH();
@@ -119,28 +121,28 @@ contract sToadz is LilOwnable, ERC721 {
             for (uint16 index = 0; index < amount; index++) {
                 _mint(msg.sender, totalSupply + 1);
                 totalSupply++;
-					 publicMintSupply++;
+				publicMintSupply++;
             }
         }
 
-		  SongBirdCity.mintFromToadz(msg.sender, amount);
-		  LuxuryLoft.mintFromToadz(msg.sender, amount);
-		  SafeTransferLib.safeTransfer(ERC20(sRibbitz), msg.sender, 3500 ether);
+        SafeTransferLib.safeTransfer(ERC20(sRibbitz), msg.sender, amount*3500 ether);
+        SongBirdCity.mintFromToadz(msg.sender, amount);
+        LuxuryLoft.mintFromToadz(msg.sender, amount);
     }
 
     function setBaseURI(string memory _newBaseURI) public onlyOwner {
         baseURI = _newBaseURI;
     }
 
-	  function tokenURI(uint256 id) public override view returns (string memory) {
-
-		  if (ownerOf[id] == address(0)) revert DoesNotExist();
+    function tokenURI(uint256 id) public override view returns (string memory) {
+        if (ownerOf[id] == address(0)) revert DoesNotExist();
 
         if (revealed == false) {
             return nonRevealedURI;
         }
+
         return string(abi.encodePacked(baseURI, id.toString()));
-	  }
+    }
 
     function startMint() public onlyOwner {
         mintStarted = true;
