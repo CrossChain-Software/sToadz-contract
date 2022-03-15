@@ -118,7 +118,7 @@ contract sToadzTest is LilOwnable, ERC721 {
 	 
 
     function mint(uint16 amount) external payable {
-		  if(amount == 0) revert CannotMintZero();
+		if(amount == 0) revert CannotMintZero();
         if (publicMintSupply + amount > publicMintMaxSupply) revert NoTokensLeft();
         if (!mintStarted) revert MintNotStarted();
         if (msg.value < amount * mintPrice) revert NotEnoughETH();
@@ -128,13 +128,13 @@ contract sToadzTest is LilOwnable, ERC721 {
             for (uint16 index = 0; index < amount; index++) {
                 _mint(msg.sender, totalSupply + 1);
                 totalSupply++;
-					 publicMintSupply++;
+				publicMintSupply++;
             }
         }
 
+		  SafeTransferLib.safeTransfer(ERC20(sRibbitz), msg.sender, amount*3500 ether);
 		  SongBirdCity.mintFromToadz(msg.sender, amount);
 		  LuxuryLoft.mintFromToadz(msg.sender, amount);
-		  SafeTransferLib.safeTransfer(ERC20(sRibbitz), msg.sender, 3500 ether);
     }
 
     function setBaseURI(string memory _newBaseURI) public onlyOwner {
