@@ -19,3 +19,8 @@ ETHERSCAN_API_KEY=""
 PRIVATE_KEY1=""
 PRIVATE_KEY2=""
 ```
+
+1. `deploy.js`
+2. `setAirdrop.js`
+3. `setMint.js`
+4. `aidrop.js`
