@@ -1,7 +1,3 @@
-// Sources flattened with hardhat v2.8.4 https://hardhat.org
-
-// File contracts/utils/Strings.sol
-
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.12;
 
@@ -31,12 +27,6 @@ library Strings {
         return string(buffer);
     }
 }
-
-
-// File contracts/utils/LilOwnable.sol
-
-//SPDX-License-Identifier: MIT
-pragma solidity 0.8.12;
 
 error NotOwner();
 
@@ -78,12 +68,6 @@ abstract contract LilOwnable {
     }
 }
 
-
-// File contracts/utils/ERC721TokenReceiver.sol
-
-//SPDX-License-Identifier: MIT
-pragma solidity 0.8.12;
-
 /// @notice A generic interface for a contract which properly accepts ERC721 tokens.
 /// @author Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC721.sol)
 interface ERC721TokenReceiver {
@@ -94,12 +78,6 @@ interface ERC721TokenReceiver {
         bytes calldata data
     ) external returns (bytes4);
 }
-
-
-// File contracts/utils/ERC721.sol
-
-//SPDX-License-Identifier: MIT
-pragma solidity 0.8.12;
 
 /// @notice Modern, minimalist, and gas efficient ERC-721 implementation.
 /// @author Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC721.sol)
@@ -304,13 +282,6 @@ abstract contract ERC721 {
     }
 }
 
-
-// File contracts/utils/ERC20.sol
-
-//SPDX-License-Identifier: MIT
-pragma solidity 0.8.12;
-
-
 /// @notice Modern and gas efficient ERC20 + EIP-2612 implementation.
 /// @author Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC20.sol)
 /// @author Modified from Uniswap (https://github.com/Uniswap/uniswap-v2-core/blob/master/contracts/UniswapV2ERC20.sol)
@@ -504,12 +475,6 @@ abstract contract ERC20 {
     }
 }
 
-
-// File contracts/utils/SafeTransferLib.sol
-
-//SPDX-License-Identifier: MIT
-pragma solidity 0.8.12;
-
 /// @notice Safe ETH and ERC20 transfer library that gracefully handles missing return values.
 /// @author Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/utils/SafeTransferLib.sol)
 /// @author Modified from Gnosis (https://github.com/gnosis/gp-v2-contracts/blob/main/src/contracts/libraries/GPv2SafeERC20.sol)
@@ -645,14 +610,6 @@ library SafeTransferLib {
         }
     }
 }
-
-
-// File contracts/sToadzTest.sol
-
-//SPDX-License-Identifier: MIT
-pragma solidity 0.8.12;
-
-
 
 
 
