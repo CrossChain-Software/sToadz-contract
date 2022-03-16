@@ -9,7 +9,7 @@ const { airdropAmounts } = require("./data/airdropAmounts");
 /// freeflow- 2.5% (0x5B588e36FF358D4376A76FB163fd69Da02A2A9a5)
 
 const deploy = async () => {
-  const sToadzFactory = await ethers.getContractFactory("TestSToadz");
+  const sToadzFactory = await ethers.getContractFactory("sToadzTest");
   const contributorAddresses = [
     "0xb20F2a4601aED75B886CC5B84E28a0D65a7Bfd48",
     "0x90ca2B438482f2b205dA814B94b4758c3a229541",

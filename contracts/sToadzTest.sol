@@ -36,9 +36,9 @@ contract sToadzTest is LilOwnable, ERC721 {
 
 	uint256 public constant publicMintMaxSupply = 6000;
     uint256 public constant mintPrice = 0.0012 ether;
-    uint256 public constant maxPublicMintAmount = 100;
-	//address public constant sRibbitz = 0x399E279c814a3100065fceaB8CbA1aB114805344;
-	address public immutable sRibbitz;
+    uint256 public constant maxPublicMintAmount = 50;
+	//address public constant sRibbits = 0x399E279c814a3100065fceaB8CbA1aB114805344;
+	address public immutable sRibbits;
 
     bool public mintStarted = false;
     bool public revealed = false;
@@ -71,7 +71,7 @@ contract sToadzTest is LilOwnable, ERC721 {
     constructor(
         string memory _nonRevealedURI,
         address[5] memory _contributorAddresses,
-		  address _sRibbitz
+		  address _sRibbits
     ) payable ERC721("sToadz", "STOADZ") {
         nonRevealedURI = _nonRevealedURI;
 
@@ -87,7 +87,7 @@ contract sToadzTest is LilOwnable, ERC721 {
         _royaltyShares[_royaltyAddresses[3]] = 8090;
         _royaltyShares[_royaltyAddresses[4]] = 250;
 
-		sRibbitz = _sRibbitz;
+		sRibbits = _sRibbits;
 		  
     }
 
@@ -132,7 +132,7 @@ contract sToadzTest is LilOwnable, ERC721 {
             }
         }
 
-		  SafeTransferLib.safeTransfer(ERC20(sRibbitz), msg.sender, amount*3500 ether);
+		  SafeTransferLib.safeTransfer(ERC20(sRibbits), msg.sender, amount*3500 ether);
 		  SongBirdCity.mintFromToadz(msg.sender, amount);
 		  LuxuryLoft.mintFromToadz(msg.sender, amount);
     }

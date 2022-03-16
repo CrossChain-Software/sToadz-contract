@@ -35,8 +35,8 @@ contract sToadz is LilOwnable, ERC721 {
 
 	uint256 public constant publicMintMaxSupply = 6000;
     uint256 public constant mintPrice = 1200 ether;
-    uint256 public constant maxPublicMintAmount = 100;
-	address public constant sRibbitz = 0x399E279c814a3100065fceaB8CbA1aB114805344;
+    uint256 public constant maxPublicMintAmount = 50;
+	address public constant sRibbits = 0x399E279c814a3100065fceaB8CbA1aB114805344;
 
     bool public mintStarted = false;
     bool public revealed = false;
@@ -125,7 +125,7 @@ contract sToadz is LilOwnable, ERC721 {
             }
         }
 
-        SafeTransferLib.safeTransfer(ERC20(sRibbitz), msg.sender, amount*3500 ether);
+        SafeTransferLib.safeTransfer(ERC20(sRibbits), msg.sender, amount*3500 ether);
         SongBirdCity.mintFromToadz(msg.sender, amount);
         LuxuryLoft.mintFromToadz(msg.sender, amount);
     }

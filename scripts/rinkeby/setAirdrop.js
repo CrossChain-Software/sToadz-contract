@@ -1,14 +1,21 @@
 const { ethers } = require("hardhat");
 const { airdropAddresses } = require("../data/airdropAddresses");
 const { airdropAmounts } = require("../data/airdropAmounts");
-const sToadzTest = require("../../artifacts/contracts/TestSToadz.sol/sToadzTest.json");
+const sToadzTest = require("../../artifacts/contracts/sToadzTest.sol/sToadzTest.json");
 
 const setAirdrop = async () => {
   const owner = await ethers.getSigner();
-  const sToadzAddress = "0x01729C56F1f4c85373f3583b0cF113C2d4C18F5f";
-  const sToadzContract = new ethers.Contract(sToadzAddress, sToadzTest.abi, owner);
+  const sToadzAddress = "0x04E1d82fbC93fccAE3e0124bf405b6EC00e39e0a";
+  const sToadzContract = new ethers.Contract(
+    sToadzAddress,
+    sToadzTest.abi,
+    owner
+  );
 
-  const setAirdropInfoTx = await sToadzContract.setAirdropInfo(airdropAddresses, airdropAmounts);
+  const setAirdropInfoTx = await sToadzContract.setAirdropInfo(
+    airdropAddresses,
+    airdropAmounts
+  );
   await setAirdropInfoTx.wait();
 };
 

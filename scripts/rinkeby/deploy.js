@@ -9,9 +9,13 @@ Mints 21M sRibbitz and sends to contract.
 const deploy = async () => {
   const sRibbitz = await ethers.getContractFactory("sRibbitzTest");
   const sRibbitzContract = await sRibbitz.deploy();
+  console.log("sRibbitzContract.address", sRibbitzContract.address);
+
   await sRibbitzContract.deployed();
 
-  const mintOwnerTx = await sRibbitzContract.ownerMint(ethers.utils.parseEther("21000000"));
+  const mintOwnerTx = await sRibbitzContract.ownerMint(
+    ethers.utils.parseEther("21000000")
+  );
   await mintOwnerTx.wait();
 
   const sToadzFactory = await ethers.getContractFactory("sToadzTest");
@@ -22,25 +26,45 @@ const deploy = async () => {
     "0xc8d015b94a3Fb41DC13d6a9573bb454300023A94",
     "0x5B588e36FF358D4376A76FB163fd69Da02A2A9a5",
   ];
-  const sToadzContract = await sToadzFactory.deploy("", contributorAddresses, sRibbitzContract.address);
+  const sToadzContract = await sToadzFactory.deploy(
+    "",
+    contributorAddresses,
+    sRibbitzContract.address
+  );
   await sToadzContract.deployed();
+  console.log("TestSToadzContract.address", sToadzContract.address);
 
-  const transferToToadz = await sRibbitzContract.transfer(sToadzContract.address, ethers.utils.parseEther("21000000"));
+  const transferToToadz = await sRibbitzContract.transfer(
+    sToadzContract.address,
+    ethers.utils.parseEther("21000000")
+  );
   await transferToToadz.wait();
 
   const songbirdFactory = await ethers.getContractFactory("SongBirdCity");
   const buildingsFactory = await ethers.getContractFactory("LuxuryLofts");
 
-  const songbirdContract = await songbirdFactory.deploy("", sToadzContract.address);
+  const songbirdContract = await songbirdFactory.deploy(
+    "",
+    sToadzContract.address
+  );
   await songbirdContract.deployed();
+  console.log("songbirdContract.address", songbirdContract.address);
 
-  const buildingsContract = await buildingsFactory.deploy("", sToadzContract.address);
+  const buildingsContract = await buildingsFactory.deploy(
+    "",
+    sToadzContract.address
+  );
   await buildingsContract.deployed();
+  console.log("buildingsContract.address", buildingsContract.address);
 
-  const setSongbirdContract = await sToadzContract.setSongBirdCity(songbirdContract.address);
+  const setSongbirdContract = await sToadzContract.setSongBirdCity(
+    songbirdContract.address
+  );
   await setSongbirdContract.wait();
 
-  const setBuildingsContract = await sToadzContract.setLofts(buildingsContract.address);
+  const setBuildingsContract = await sToadzContract.setLofts(
+    buildingsContract.address
+  );
   await setBuildingsContract.wait();
 };
 

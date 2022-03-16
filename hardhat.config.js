@@ -19,6 +19,10 @@ module.exports = {
       accounts: [PRIVATE_KEY1, PRIVATE_KEY2],
       gas: "auto",
     },
+    songbird: {
+      url: "https://songbird.towolabs.com/ext/bc/C/rpc",
+      accounts: [PRIVATE_KEY1],
+    },
   },
   solidity: {
     version: "0.8.12",
