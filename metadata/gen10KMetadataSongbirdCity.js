@@ -5,7 +5,7 @@ const fs = require("fs");
 const metadata = {};
 const FILE_START = 1;
 const FILE_END = 10000;
-const outJsonDir = `./jsonNew`;
+const outJsonDir = `./jsonSongbirdCity`;
 const name = "Songbird City";
 const description =
   "Songbird City is the metaverse of mischief and fun. This NFT marks the beginning of a journey into the beautiful urban aesthetic of neon signs and nighttime adventure.";
