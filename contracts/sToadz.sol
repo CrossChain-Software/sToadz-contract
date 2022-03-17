@@ -34,9 +34,9 @@ contract sToadz is LilOwnable, ERC721 {
     using Strings for uint256;
 
 	uint256 public constant publicMintMaxSupply = 6000;
-    uint256 public constant mintPrice = 1200 ether;
+   uint256 public constant mintPrice = 1200 ether;
 	address public constant sRibbits = 0x399E279c814a3100065fceaB8CbA1aB114805344;
-    uint256 public maxPublicMintAmount = 50;
+   uint256 public maxPublicMintAmount = 50;
 
     bool public mintStarted = false;
 
@@ -123,11 +123,11 @@ contract sToadz is LilOwnable, ERC721 {
             for (uint16 index = 0; index < amount; index++) {
                 _mint(msg.sender, totalSupply + 1);
                 totalSupply++;
-				publicMintSupply++;
+					 publicMintSupply++;
             }
         }
-
-        SafeTransferLib.safeTransfer(ERC20(sRibbits), msg.sender, amount*3500 ether);
+		  uint256 amountToSend = uint256(amount) * 3500 ether;
+        SafeTransferLib.safeTransfer(ERC20(sRibbits), msg.sender, amountToSend);
         SongBirdCity.mintFromToadz(msg.sender, amount);
         LuxuryLoft.mintFromToadz(msg.sender, amount);
     }
@@ -139,7 +139,7 @@ contract sToadz is LilOwnable, ERC721 {
     function tokenURI(uint256 id) public override view returns (string memory) {
         if (ownerOf[id] == address(0)) revert DoesNotExist();
 
-        return string(abi.encodePacked(baseURI, id.toString()));
+        return string(abi.encodePacked(baseURI, id.toString(), ".json"));
     }
 
     function startMint() public onlyOwner {
