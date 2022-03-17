@@ -23,13 +23,9 @@ error NotFromToadz();
 contract SongBirdCity is LilOwnable, ERC721 {
     using Strings for uint256;
 
-    bool public mintStarted = false;
-    bool public revealed = false;
-
     uint256 public totalSupply;
 
     string public baseURI;
-    string public nonRevealedURI;
 
 	 address public immutable TOADZ;
 
@@ -39,10 +35,8 @@ contract SongBirdCity is LilOwnable, ERC721 {
     }
     
     constructor(
-        string memory _nonRevealedURI,
 		  address _toadzContract
     ) payable ERC721("SongBirdCity", "SBC") {
-        nonRevealedURI = _nonRevealedURI;
 			TOADZ = _toadzContract;
     }
 
@@ -60,19 +54,11 @@ contract SongBirdCity is LilOwnable, ERC721 {
     function tokenURI(uint256 id) public view virtual override returns (string memory) {
         if (ownerOf[id] == address(0)) revert DoesNotExist();
 
-        if (revealed == false) {
-            return nonRevealedURI;
-        }
         return string(abi.encodePacked(baseURI, id.toString()));
     }
 
     function setBaseURI(string memory _newBaseURI) public onlyOwner {
         baseURI = _newBaseURI;
-    }
-
-    function reveal(string memory _baseUri) public onlyOwner {
-        setBaseURI(_baseUri);
-        revealed = true;
     }
 
     /// @dev Tells interfacing contracts what they can do with this one

@@ -31,14 +31,14 @@ interface AirdropNft {
 }
 
 contract sToadzTest is LilOwnable, ERC721 {
-    using Strings for uint256;
+   using Strings for uint256;
 
 	uint256 public constant publicMintMaxSupply = 6000;
-    uint256 public constant mintPrice = 1200 ether;
-	address public sRibbits;
-    uint256 public maxPublicMintAmount = 50;
+   uint256 public constant mintPrice = 0.0012 ether;
+	address public constant sRibbits = 0xDaA073cEf5b2fBd406A78bba81D4Ba73Ad4556D8;
+   uint256 public maxPublicMintAmount = 50;
 
-    bool public mintStarted = false;
+   bool public mintStarted = false;
 
     uint256 public totalSupply;
 	uint256 public publicMintSupply;
@@ -167,12 +167,6 @@ contract sToadzTest is LilOwnable, ERC721 {
 
     function setLofts(address _loftAddress) external onlyOwner {
         LuxuryLoft = AirdropNft(_loftAddress);
-    }
-
-    // TODO: remove before deployment, hardcode
-    // for testing purposes only
-    function setSRibbits(address _sRibbitsAddress) external onlyOwner {
-        sRibbits = _sRibbitsAddress;
     }
 
     function setMaxPublicMintAmount(uint256 _maxPublicMintAmount) external onlyOwner {
