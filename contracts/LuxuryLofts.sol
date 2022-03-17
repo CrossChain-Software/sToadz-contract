@@ -11,36 +11,21 @@ error NotFromToadz();
 contract LuxuryLofts is LilOwnable, ERC721 {
     using Strings for uint256;
 
-<<<<<<< HEAD
-    bool public mintStarted = false;
-=======
->>>>>>> 058cd89d9a693da708b9fbc0af17700f32ccef5c
     uint256 public totalSupply;
     uint256 public teamStart = 6000;
     uint256 public totalLLAmount = 10000;
     string public baseURI;
-<<<<<<< HEAD
 	address public immutable TOADZ;
-=======
-	 address public immutable TOADZ;
->>>>>>> 058cd89d9a693da708b9fbc0af17700f32ccef5c
 
     modifier onlyOwner() {
         require(msg.sender == _owner, "Ownable: caller is not the owner");
         _;
     }
     
-<<<<<<< HEAD
+
     constructor(address _toadzContract) payable ERC721("Luxury Lofts", "LOFT") {
 		TOADZ = _toadzContract;
-=======
-    constructor(
-		  address _toadzContract
-    ) payable ERC721("Luxury Lofts", "LOFT") {
-			TOADZ = _toadzContract;
->>>>>>> 058cd89d9a693da708b9fbc0af17700f32ccef5c
     }
-
 
     function mintFromToadz(address to, uint16 amount) external payable {    
 		if(msg.sender != TOADZ) revert NotFromToadz();
@@ -62,21 +47,13 @@ contract LuxuryLofts is LilOwnable, ERC721 {
     function tokenURI(uint256 id) public view virtual override returns (string memory) {
         if (ownerOf[id] == address(0)) revert DoesNotExist();
 
-<<<<<<< HEAD
         return string(abi.encodePacked(baseURI, id.toString(), ".json"));
-=======
-        return string(abi.encodePacked(baseURI, id.toString()));
->>>>>>> 058cd89d9a693da708b9fbc0af17700f32ccef5c
     }
 
     function setBaseURI(string memory _newBaseURI) public onlyOwner {
         baseURI = _newBaseURI;
     }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 058cd89d9a693da708b9fbc0af17700f32ccef5c
     /// @dev Tells interfacing contracts what they can do with this one
     function supportsInterface(bytes4 interfaceId)
         public
