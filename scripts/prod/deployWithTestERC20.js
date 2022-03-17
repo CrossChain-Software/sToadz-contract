@@ -19,15 +19,17 @@ const deploy = async () => {
   await mintOwnerTx.wait();
 
   // sTaodz contract
-  const sToadzFactory = await ethers.getContractFactory("sToadzTest");
+  const sToadzFactory = await ethers.getContractFactory("sToadzTestFlattened");
   const sToadzContract = await sToadzFactory.deploy();
   await sToadzContract.deployed();
   console.log("TestSToadzContract.address", sToadzContract.address);
 
   // REPLACE WITH REAL IPFS NFT HASH
-  sToadzContract.setBaseURI(
+  const baseURI = await sToadzContract.setBaseURI(
     "https://ipfs.io/ipfs/QmU68A2kQV65S12xwunVkL7zUihvH1bpHPFzrkvy3AQMj7/"
   );
+  await baseURI.wait();
+  console.log("set baseURI");
 
   // transfer 21M erc20 to the sToadz contract for sending on mint
   const transferToToadz = await sRibbitzContract.transfer(

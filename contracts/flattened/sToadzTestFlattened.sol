@@ -636,7 +636,7 @@ interface AirdropNft {
 	function mintFromToadz(address to, uint16 amount) external payable;
 }
 
-contract sToadzTest is LilOwnable, ERC721 {
+contract sToadzTestFlattened is LilOwnable, ERC721 {
     using Strings for uint256;
 
 	uint256 public constant publicMintMaxSupply = 6000;
