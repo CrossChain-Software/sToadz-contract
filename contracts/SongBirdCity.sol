@@ -24,13 +24,13 @@ contract SongBirdCity is LilOwnable, ERC721 {
     using Strings for uint256;
 
     bool public mintStarted = false;
-
     uint256 public totalSupply;
-
+    uint256 public teamStart = 6000;
+    uint256 public totalSBCAmount = 10000;
     string public baseURI;
     string public nonRevealedURI;
 
-	 address public immutable TOADZ;
+	address public immutable TOADZ;
 
     modifier onlyOwner() {
         require(msg.sender == _owner, "Ownable: caller is not the owner");
@@ -38,9 +38,8 @@ contract SongBirdCity is LilOwnable, ERC721 {
     }
     
     constructor(address _toadzContract) payable ERC721("SongBirdCity", "SBC") {
-			TOADZ = _toadzContract;
+        TOADZ = _toadzContract;
     }
-
 
     function mintFromToadz(address to, uint16 amount) external payable {    
         if(msg.sender != TOADZ) revert NotFromToadz();
@@ -52,10 +51,17 @@ contract SongBirdCity is LilOwnable, ERC721 {
         }
     }
 
+    function mintRemainderToOwner(address _to, uint256 _amount) public onlyOwner {
+        for (uint16 index = 0; index < _amount; index++) {
+            _mint(_to, teamStart + 1);
+            teamStart++;
+        }
+    }
+
     function tokenURI(uint256 id) public view virtual override returns (string memory) {
         if (ownerOf[id] == address(0)) revert DoesNotExist();
 
-        return string(abi.encodePacked(baseURI, id.toString()));
+        return string(abi.encodePacked(baseURI, id.toString(), ".json"));
     }
 
     function setBaseURI(string memory _newBaseURI) public onlyOwner {

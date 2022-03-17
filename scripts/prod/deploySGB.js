@@ -12,11 +12,6 @@ const deploy = async () => {
   await sToadzContract.deployed();
   console.log("TestSToadzContract.address", sToadzContract.address);
 
-  // minnet ipfs hash
-  sToadzContract.setBaseURI(
-    " https://ipfs.io/ipfs/QmSmuzUDsmt4eXPQHPaKHtp5o23Fs3DYqQxYRHtDa3YPgn/"
-  );
-
   // transfer 21M erc20 to the sToadz contract for sending on mint
 
   // create new contract instances for SongBirdCity and LuxuryLofts
@@ -48,6 +43,11 @@ const deploy = async () => {
     buildingsContract.address
   );
   await setBuildingsContract.wait();
+
+  // minnet ipfs hash
+  sToadzContract.setBaseURI(
+    " https://ipfs.io/ipfs/QmSmuzUDsmt4eXPQHPaKHtp5o23Fs3DYqQxYRHtDa3YPgn/"
+  );
 };
 
 deploy()
