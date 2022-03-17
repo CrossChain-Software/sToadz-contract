@@ -6,6 +6,7 @@ const { ethers } = require("hardhat");
 */
 
 const deploy = async () => {
+  /// deploy ERC20
   const sRibbitz = await ethers.getContractFactory("sRibbitzTest");
   const sRibbitzContract = await sRibbitz.deploy();
   console.log("sRibbitzContract.address", sRibbitzContract.address);
@@ -17,11 +18,18 @@ const deploy = async () => {
   );
   await mintOwnerTx.wait();
 
+  // sTaodz contract
   const sToadzFactory = await ethers.getContractFactory("sToadzTest");
   const sToadzContract = await sToadzFactory.deploy();
   await sToadzContract.deployed();
   console.log("TestSToadzContract.address", sToadzContract.address);
 
+  // REPLACE WITH REAL IPFS NFT HASH
+  sToadzContract.setBaseURI(
+    "https://ipfs.io/ipfs/QmU68A2kQV65S12xwunVkL7zUihvH1bpHPFzrkvy3AQMj7/"
+  );
+
+  // transfer 21M erc20 to the sToadz contract for sending on mint
   const transferToToadz = await sRibbitzContract.transfer(
     sToadzContract.address,
     ethers.utils.parseEther("21000000")
@@ -32,14 +40,14 @@ const deploy = async () => {
   const buildingsFactory = await ethers.getContractFactory("LuxuryLofts");
 
   const songbirdContract = await songbirdFactory.deploy(
-    "",
+    "https://ipfs.io/ipfs/QmQMwdDn3aNSD86VTu4JSxigxmkR9iryC6V53PYoWsEBXY/",
     sToadzContract.address
   );
   await songbirdContract.deployed();
   console.log("songbirdContract.address", songbirdContract.address);
 
   const buildingsContract = await buildingsFactory.deploy(
-    "",
+    "https://ipfs.io/ipfs/QmbRJwZruY5XhTEaTEXyjFjYHFSXzDkE81Pr7unnSD7FTo/",
     sToadzContract.address
   );
   await buildingsContract.deployed();
@@ -56,6 +64,12 @@ const deploy = async () => {
     buildingsContract.address
   );
   await setBuildingsContract.wait();
+
+  /// set the sRibbits address in sToadz contract
+  const setSRibbitsContract = await sToadzContract.setSRibbits(
+    sRibbitzContract.address
+  );
+  await setSRibbitsContract.wait();
 };
 
 deploy()

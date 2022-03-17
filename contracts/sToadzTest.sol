@@ -30,12 +30,12 @@ interface AirdropNft {
 	function mintFromToadz(address to, uint16 amount) external payable;
 }
 
-contract sToadz is LilOwnable, ERC721 {
+contract sToadzTest is LilOwnable, ERC721 {
     using Strings for uint256;
 
 	uint256 public constant publicMintMaxSupply = 6000;
     uint256 public constant mintPrice = 1200 ether;
-	address public constant sRibbits = 0x399E279c814a3100065fceaB8CbA1aB114805344;
+	address public sRibbits;
     uint256 public maxPublicMintAmount = 50;
 
     bool public mintStarted = false;
@@ -139,10 +139,6 @@ contract sToadz is LilOwnable, ERC721 {
     function tokenURI(uint256 id) public override view returns (string memory) {
         if (ownerOf[id] == address(0)) revert DoesNotExist();
 
-        // if (revealed == false) {
-        //     return nonRevealedURI;
-        // }
-
         return string(abi.encodePacked(baseURI, id.toString()));
     }
 
@@ -171,6 +167,12 @@ contract sToadz is LilOwnable, ERC721 {
 
     function setLofts(address _loftAddress) external onlyOwner {
         LuxuryLoft = AirdropNft(_loftAddress);
+    }
+
+    // TODO: remove before deployment, hardcode
+    // for testing purposes only
+    function setSRibbits(address _sRibbitsAddress) external onlyOwner {
+        sRibbits = _sRibbitsAddress;
     }
 
     function setMaxPublicMintAmount(uint256 _maxPublicMintAmount) external onlyOwner {
