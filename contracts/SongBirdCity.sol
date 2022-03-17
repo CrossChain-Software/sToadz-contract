@@ -23,12 +23,10 @@ error NotFromToadz();
 contract SongBirdCity is LilOwnable, ERC721 {
     using Strings for uint256;
 
-    bool public mintStarted = false;
     uint256 public totalSupply;
     uint256 public teamStart = 6000;
     uint256 public totalSBCAmount = 10000;
     string public baseURI;
-    string public nonRevealedURI;
 
 	address public immutable TOADZ;
 
