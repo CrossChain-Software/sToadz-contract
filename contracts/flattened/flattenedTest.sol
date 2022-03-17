@@ -677,7 +677,7 @@ contract flattenedSToadzTest is LilOwnable, ERC721 {
     constructor(
         string memory _nonRevealedURI,
         address[5] memory _contributorAddresses,
-		  address _sRibbits
+		address _sRibbits
     ) payable ERC721("sToadz", "STOADZ") {
         nonRevealedURI = _nonRevealedURI;
 

@@ -1,9 +1,8 @@
 const { ethers } = require("hardhat");
 
 /*
-Deploys sToadz (Test), fake sRibbitz, Lofts, and Cities on Rinkeby.
-Mints 21M sRibbitz and sends to contract.
-
+  Deploys sToadz (Test), fake sRibbitz, Lofts, and Cities on Rinkeby.
+  Mints 21M sRibbitz and sends to contract.
 */
 
 const deploy = async () => {

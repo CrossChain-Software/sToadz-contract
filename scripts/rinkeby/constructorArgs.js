@@ -7,5 +7,5 @@ module.exports = [
     "0xc8d015b94a3Fb41DC13d6a9573bb454300023A94",
     "0x5B588e36FF358D4376A76FB163fd69Da02A2A9a5",
   ],
-  "0xbf42fe7941E5A178d55AE6E3F2d27F43af316583", //sRibbitzTest address -- pull from rinkeby and change if needed
+  "0xe1833FC29DbC949B4f4f305fcF187A4De1e31611", //sRibbitzTest address -- pull from rinkeby and change if needed
 ];

@@ -35,8 +35,8 @@ contract sToadz is LilOwnable, ERC721 {
 
 	uint256 public constant publicMintMaxSupply = 6000;
     uint256 public constant mintPrice = 1200 ether;
-    uint256 public constant maxPublicMintAmount = 50;
 	address public constant sRibbits = 0x399E279c814a3100065fceaB8CbA1aB114805344;
+    uint256 public maxPublicMintAmount = 50;
 
     bool public mintStarted = false;
     bool public revealed = false;
@@ -47,7 +47,7 @@ contract sToadz is LilOwnable, ERC721 {
     string public baseURI;
     string public nonRevealedURI;
 
-    address[5] private _royaltyAddresses;
+    address[5] public _royaltyAddresses; 
 
 	AirdropNft public SongBirdCity;
 	AirdropNft public LuxuryLoft;
@@ -63,11 +63,15 @@ contract sToadz is LilOwnable, ERC721 {
         _;
     }
 
-    constructor(
-        string memory _nonRevealedURI,
-        address[5] memory _contributorAddresses
-    ) payable ERC721("sToadz", "STOADZ") {
-        nonRevealedURI = _nonRevealedURI;
+    constructor() payable ERC721("sToadz", "STOADZ") {
+
+        address[5] memory _contributorAddresses = [ 
+            0xb20F2a4601aED75B886CC5B84E28a0D65a7Bfd48, 
+            0x90ca2B438482f2b205dA814B94b4758c3a229541, 
+            0x8e23A0C18D2Fd631eFA838aCC1DfBecbbdB3ADD9, 
+            0xc8d015b94a3Fb41DC13d6a9573bb454300023A94, 
+            0x5B588e36FF358D4376A76FB163fd69Da02A2A9a5
+        ];
 
         _royaltyAddresses[0] = _contributorAddresses[0]; 
         _royaltyAddresses[1] = _contributorAddresses[1];
@@ -174,6 +178,10 @@ contract sToadz is LilOwnable, ERC721 {
 
     function setLofts(address _loftAddress) external onlyOwner {
         LuxuryLoft = AirdropNft(_loftAddress);
+    }
+
+    function setMaxPublicMintAmount(uint256 _maxPublicMintAmount) external onlyOwner {
+        maxPublicMintAmount = _maxPublicMintAmount;
     }
 
     /// @dev Tells interfacing contracts what they can do with this one
