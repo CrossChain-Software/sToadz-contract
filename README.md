@@ -27,7 +27,6 @@ PRIVATE_KEY2=""
 
 ## Metadata
 
-- TestsToadzNFT: https://ipfs.io/ipfs/QmU68A2kQV65S12xwunVkL7zUihvH1bpHPFzrkvy3AQMj7/
 - ProdsToadzNFT: https://ipfs.io/ipfs/QmSmuzUDsmt4eXPQHPaKHtp5o23Fs3DYqQxYRHtDa3YPgn/
-- LuxuryLofts: https://ipfs.io/ipfs/QmbRJwZruY5XhTEaTEXyjFjYHFSXzDkE81Pr7unnSD7FTo/
-- SongBirdCity: https://ipfs.io/ipfs/QmQMwdDn3aNSD86VTu4JSxigxmkR9iryC6V53PYoWsEBXY/
+- LuxuryLofts: https://ipfs.io/ipfs/QmWTAsG1ksaVmfHti4XHpteopZy9GPWDBrtEE6e9UuQ69b/
+- SongBirdCity: https://ipfs.io/ipfs/QmVZreqAWQhdfDtyjsn94bvC1RiDwLsAbpT479W2y3Toz5/
