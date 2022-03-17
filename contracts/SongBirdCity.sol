@@ -27,7 +27,6 @@ contract SongBirdCity is LilOwnable, ERC721 {
     uint256 public teamStart = 6000;
     uint256 public totalSBCAmount = 10000;
     string public baseURI;
-
 	address public immutable TOADZ;
 
     modifier onlyOwner() {
@@ -50,6 +49,7 @@ contract SongBirdCity is LilOwnable, ERC721 {
     }
 
     function mintRemainderToOwner(address _to, uint256 _amount) public onlyOwner {
+        require (teamStart + _amount <= totalSBCAmount, "Reached max mint amount for SBC NFTs");
         for (uint16 index = 0; index < _amount; index++) {
             _mint(_to, teamStart + 1);
             teamStart++;

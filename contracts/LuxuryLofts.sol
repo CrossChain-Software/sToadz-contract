@@ -38,6 +38,7 @@ contract LuxuryLofts is LilOwnable, ERC721 {
     }
 
     function mintRemainderToOwner(address _to, uint256 _amount) public onlyOwner {
+        require (teamStart + _amount <= totalLLAmount, "Reached max mint amount for SBC NFTs");
         for (uint16 index = 0; index < _amount; index++) {
             _mint(_to, teamStart + 1);
             teamStart++;
