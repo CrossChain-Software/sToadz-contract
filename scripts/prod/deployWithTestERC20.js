@@ -7,6 +7,7 @@ const { ethers } = require("hardhat");
 
 const deploy = async () => {
   /// deploy ERC20
+  console.log("trying to deploy ERC20");
   const sRibbitz = await ethers.getContractFactory("sRibbitzTest");
   const sRibbitzContract = await sRibbitz.deploy();
   console.log("sRibbitzContract.address", sRibbitzContract.address);
@@ -30,6 +31,10 @@ const deploy = async () => {
   );
   await baseURI.wait();
   console.log("set baseURI");
+
+  // start the mint for testing
+  const setMint = await sToadzContract.startMint();
+  await setMint.wait();
 
   // transfer 21M erc20 to the sToadz contract for sending on mint
   const transferToToadz = await sRibbitzContract.transfer(
