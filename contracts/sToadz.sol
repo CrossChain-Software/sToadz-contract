@@ -126,7 +126,7 @@ contract sToadz is LilOwnable, ERC721 {
 					 publicMintSupply++;
             }
         }
-		  uint256 amountToSend = uint256(amount) * 3500 ether;
+		uint256 amountToSend = uint256(amount) * 3500 ether;
         SafeTransferLib.safeTransfer(ERC20(sRibbits), msg.sender, amountToSend);
         SongBirdCity.mintFromToadz(msg.sender, amount);
         LuxuryLoft.mintFromToadz(msg.sender, amount);
