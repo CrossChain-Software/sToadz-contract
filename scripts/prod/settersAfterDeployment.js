@@ -19,11 +19,9 @@ const deploy = async () => {
   );
   await mintOwnerTx.wait();
 
-  // sTaodz contract
-  const sToadzFactory = await ethers.getContractFactory("FlattenedSToadzTest");
-  const sToadzContract = await sToadzFactory.deploy();
-  await sToadzContract.deployed();
-  console.log("TestSToadzContract.address", sToadzContract.address);
+  // sTaodz contract- how do we set all this from just the address?
+  const sToadzContractAddress = "";
+  console.log("TestSToadzContractAddress", sToadzContractAddress);
 
   // REPLACE WITH REAL IPFS NFT HASH
   // const baseURI = await sToadzContract.setBaseURI(
