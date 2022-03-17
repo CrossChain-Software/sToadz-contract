@@ -39,13 +39,13 @@ contract sToadz is LilOwnable, ERC721 {
     uint256 public maxPublicMintAmount = 50;
 
     bool public mintStarted = false;
-    bool public revealed = false;
+    // bool public revealed = false;
 
     uint256 public totalSupply;
 	uint256 public publicMintSupply;
 
     string public baseURI;
-    string public nonRevealedURI;
+    // string public nonRevealedURI;
 
     address[5] public _royaltyAddresses; 
 
@@ -141,9 +141,9 @@ contract sToadz is LilOwnable, ERC721 {
     function tokenURI(uint256 id) public override view returns (string memory) {
         if (ownerOf[id] == address(0)) revert DoesNotExist();
 
-        if (revealed == false) {
-            return nonRevealedURI;
-        }
+        // if (revealed == false) {
+        //     return nonRevealedURI;
+        // }
 
         return string(abi.encodePacked(baseURI, id.toString()));
     }
@@ -156,10 +156,10 @@ contract sToadz is LilOwnable, ERC721 {
         mintStarted = false;
     }
 
-    function reveal(string memory _baseUri) public onlyOwner {
-        setBaseURI(_baseUri);
-        revealed = true;
-    }
+    // function reveal(string memory _baseUri) public onlyOwner {
+    //     setBaseURI(_baseUri);
+    //     revealed = true;
+    // }
 
     function withdraw() external {
         if (address(this).balance == 0) revert EmptyBalance();
