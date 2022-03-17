@@ -24,15 +24,15 @@ const deploy = async () => {
   console.log("TestSToadzContractAddress", sToadzContractAddress);
 
   // REPLACE WITH REAL IPFS NFT HASH
-  // const baseURI = await sToadzContract.setBaseURI(
-  //   "https://ipfs.io/ipfs/QmU68A2kQV65S12xwunVkL7zUihvH1bpHPFzrkvy3AQMj7/"
-  // );
-  // await baseURI.wait();
-  // console.log("set baseURI");
+  const baseURI = await sToadzContract.setBaseURI(
+    "https://ipfs.io/ipfs/QmU68A2kQV65S12xwunVkL7zUihvH1bpHPFzrkvy3AQMj7/"
+  );
+  await baseURI.wait();
+  console.log("set baseURI");
 
-  // start the mint for testing
-  // const setMint = await sToadzContract.startMint();
-  // await setMint.wait();
+  //   start the mint for testing
+  const setMint = await sToadzContract.startMint();
+  await setMint.wait();
 
   // transfer 21M erc20 to the sToadz contract for sending on mint
   const transferToToadz = await sRibbitzContract.transfer(
