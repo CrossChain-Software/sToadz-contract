@@ -34,9 +34,9 @@ contract sToadz is LilOwnable, ERC721 {
     using Strings for uint256;
 
 	uint256 public constant publicMintMaxSupply = 6000;
-   uint256 public constant mintPrice = 1200 ether;
-	address public constant sRibbits = 0x399E279c814a3100065fceaB8CbA1aB114805344;
-   uint256 public maxPublicMintAmount = 50;
+    uint256 public constant mintPrice = 1200 ether;
+    address public constant sRibbits = 0x399E279c814a3100065fceaB8CbA1aB114805344;
+    uint256 public maxPublicMintAmount = 50;
 
     bool public mintStarted = false;
 

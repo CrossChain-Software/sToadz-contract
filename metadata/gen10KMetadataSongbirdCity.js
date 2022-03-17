@@ -18,7 +18,7 @@ fs.mkdirSync(outJsonDir);
 
 for (let i = FILE_START; i <= FILE_END; i++) {
   metadata["name"] = `${name} #${i}`;
-  metadata["image"] = `ipfs://${CID}/${name}.mp4`;
+  metadata["image"] = `ipfs://${CID}/`;
 
   metadata["attributes"] = [
     {
