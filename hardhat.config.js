@@ -23,6 +23,10 @@ module.exports = {
       url: "https://songbird.towolabs.com/ext/bc/C/rpc",
       accounts: [PRIVATE_KEY1],
     },
+    coston: {
+      url: "https://coston-api.flare.network/ext/bc/C/rpc",
+      accounts: [PRIVATE_KEY1],
+    },
   },
   solidity: {
     version: "0.8.12",
