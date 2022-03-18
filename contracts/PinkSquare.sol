@@ -1,19 +1,31 @@
 //SPDX-License-Identifier: MIT
-pragma solidity 0.8.13;
+pragma solidity 0.8.12;
 
 import {LilOwnable} from "../contracts/utils/LilOwnable.sol";
 import {ERC721} from "../contracts/utils/ERC721.sol";
 import {Strings} from "../contracts/utils/Strings.sol";
 
+/*
+               
+ ____                    ____  _         _  ____ _ _         
+/ ___|  ___  _ __   __ _| __ )(_)_ __ __| |/ ___(_) |_ _   _ 
+\___ \ / _ \| '_ \ / _` |  _ \| | '__/ _` | |   | | __| | | |
+ ___) | (_) | | | | (_| | |_) | | | | (_| | |___| | |_| |_| |
+|____/ \___/|_| |_|\__, |____/|_|_|  \__,_|\____|_|\__|\__, |
+                   |___/                               |___/ 
+
+*/
+
+
 error DoesNotExist();
 error NotFromToadz();
 
-contract GreenSquare is LilOwnable, ERC721 {
+contract PinkSquare is LilOwnable, ERC721 {
     using Strings for uint256;
 
     uint256 public totalSupply;
     uint256 public teamStart = 6000;
-    uint256 public totalLLAmount = 10000;
+    uint256 public totalSBCAmount = 10000;
     string public baseURI;
 	address public immutable TOADZ;
 
@@ -22,13 +34,12 @@ contract GreenSquare is LilOwnable, ERC721 {
         _;
     }
     
-
-    constructor(address _toadzContract) payable ERC721("Luxury Lofts", "LOFT") {
-		TOADZ = _toadzContract;
+    constructor(address _toadzContract) payable ERC721("SongBirdCity", "SBC") {
+        TOADZ = _toadzContract;
     }
 
     function mintFromToadz(address to, uint16 amount) external payable {    
-		if(msg.sender != TOADZ) revert NotFromToadz();
+        if(msg.sender != TOADZ) revert NotFromToadz();
         unchecked {
             for (uint16 index = 0; index < amount; index++) {
                 _mint(to, totalSupply + 1);
@@ -38,7 +49,7 @@ contract GreenSquare is LilOwnable, ERC721 {
     }
 
     function mintRemainderToOwner(address _to, uint256 _amount) public onlyOwner {
-        require (teamStart + _amount <= totalLLAmount, "Reached max mint amount for SBC NFTs");
+        require (teamStart + _amount <= totalSBCAmount, "Reached max mint amount for SBC NFTs");
         for (uint16 index = 0; index < _amount; index++) {
             _mint(_to, teamStart + 1);
             teamStart++;
